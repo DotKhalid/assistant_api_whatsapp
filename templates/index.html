@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Interface</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        .user-card {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        #chat-box {
+            border-top: 2px solid #ddd;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="user-list"></div>
+    <div id="chat-box"></div>
+
+    <script>
+        function fetchChatHistory(phoneNumber) {
+            $.getJSON(`/get_chat_history/${phoneNumber}`, function(data) {
+                $('#chat-box').empty();
+                data.history.forEach(function(item) {
+                    $('#chat-box').append(`<p><strong>User:</strong> ${item.user}</p>`);
+                    $('#chat-box').append(`<p><strong>Assistant:</strong> ${item.assistant}</p>`);
+                });
+            });
+        }
+
+        $(document).ready(function() {
+            $.getJSON('/list_users', function(data) {
+                data.users.forEach(function(user) {
+                    $('#user-list').append(
+                        `<div class="user-card" onclick="fetchChatHistory('${user}')">${user}</div>`
+                    );
+                });
+            });
+        });
+    </script>
+</body>
+</html>
